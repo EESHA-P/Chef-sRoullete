@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Recipe Generator</title>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: antiquewhite;
+  }
+  
+  header {
+    background-color: rgb(96, 48, 14);
+    color: #fff;
+    text-align: center;
+    padding: 30px 0;
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    display:flex;
+    align-items:center;
+  }
+  header img{
+    max-width:100%;
+    height:auto;
+    margin-right:100px;
+  }
+  h1 {
+    margin: 0;
+  }
+  .logo{
+    padding-left: 30px;
+    max-height:100px;
+    max-width:100px;
+  }
+  main {
+    padding: 20px;
+  }
+  
+  .selection {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  label {
+    font-weight: bold;
+  }
+  
+  select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+  
+  .recipe-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  
+  .recipe-card {
+    width: 300px;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .recipe-card h3 {
+    margin-top: 0;
+  }
+  
+  .placeholder {
+    text-align: center;
+  }
+  
+  button {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+    background-color:sienna;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: rgb(92, 47, 26);
+  }
+  
+</style>
+</head>
+<body>
+<header>
+<img class="logo" src="c:\Users\Eesha\Desktop\Jounrnal website\logo.jpeg" alt="Header Image">
+<h1>Chef's roulette</h1>
+</header>
+
+<main>
+  <div class="selection">
+    <label for="category">Select a category:</label>
+    <select id="category">
+      <option value="breakfast">Breakfast</option>
+      <option value="lunch">Lunch</option>
+      <option value="dinner">Dinner</option>
+      <option value="snacks">Snacks</option>
+      <option value="desserts">Desserts</option>
+      <option value="drinks">Drinks</option>
+    </select>
+  </div>
+  <div class="recipe-container" id="recipeContainer">
+    <p class="placeholder">Select a category and click below to generate a random recipe!</p>
+  </div>
+  <button id="generateBtn">Generate Recipe</button>
+</main>
+
+<div id="recipeModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 id="recipeTitle"></h2>
+    <div id="recipeDetails"></div>
+  </div>
+</div>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const recipes = {
+        breakfast: {
+            "Quinoa Upma": "https://www.vegrecipesofindia.com/quinoa-upma-recipe/",
+            "Eggless Pancakes":"https://www.vegrecipesofindia.com/eggless-pancake-recipe/",
+            "Overnight Oats":"https://www.vegrecipesofindia.com/overnight-oats-recipe-oats-recipes/",
+            "French Toast": "https://tastesbetterfromscratch.com/classic-french-toast/",
+            "Aloo Paratha": "https://www.vegrecipesofindia.com/aloo-paratha-indian-bread-stuffed-with-potato-filling/"
+        },
+        lunch: {
+            "Paneer frankie": "https://pipingpotcurry.com/paneer-frankie-roll/",
+            "Palak paneer": "https://pipingpotcurry.com/palak-paneer-instant-pot/",
+            "Pulao": "https://pipingpotcurry.com/indian-lunch-recipes/",
+            "Chicken tikka kebab": "https://pipingpotcurry.com/indian-chicken-tikka-kebab/",
+            "Aloo gobi": "https://pipingpotcurry.com/roasted-aloo-gobi/"
+        },
+        dinner: {
+            "Veg Kurma": "https://www.vegrecipesofindia.com/hotel-style-veg-kurma-recipe/",
+            "Dal fry": "https://www.vegrecipesofindia.com/dal-fry-how-to-make-prepare-dal-fry-recipe/",
+            "Brinji rice":"https://www.vegrecipesofindia.com/brinji-rice-recipe/#h-how-to-make-brinji-rice",
+            "Bhindi Masala": "https://www.vegrecipesofindia.com/bhindi-masala/",
+            "Tomato and Corn soup": "https://myheartbeets.com/instant-pot-indian-tomato-corn-soup/"
+        },
+        snacks: {
+            "Corn cutlet": "https://hebbarskitchen.com/corn-cutlet-recipe-crispy-corn-kabab/",
+            "Fruit Salad": "https://www.allrecipes.com/recipe/214947/perfect-summer-fruit-salad/",
+            "Potato chips": "https://www.allrecipes.com/recipe/73135/homestyle-potato-chips/",
+            "Popcorn": "https://www.simplyrecipes.com/recipes/perfect_popcorn/",
+            "Samosa": "https://www.recipetineats.com/samosa-recipe/"
+        },
+        desserts: {
+            "Chocolate Cake": "https://sallysbakingaddiction.com/triple-chocolate-layer-cake/",
+            "Apple Pie": "https://www.recipetineats.com/apple-pie-recipe/",
+            "Cheesecake": "https://bakewithzoha.com/best-cheesecake/",
+            "Ice Cream Sundae": "https://www.delish.com/cooking/g2855/ice-cream-sundae-recipes/",
+            "Fruit Tart": "https://www.delish.com/cooking/recipe-ideas/a32896550/fruit-tart-recipe/"
+        },
+        drinks: {
+            "Hot chocolate": "https://www.vegrecipesofindia.com/hot-chocolate/",
+            "Blueberry Smoothie": "https://www.vegrecipesofindia.com/blueberry-smoothie-recipe/",
+            "Iced Coffee": "https://www.allrecipes.com/recipe/21667/easy-iced-coffee/",
+            "Lemonade": "https://www.simplyrecipes.com/recipes/perfect_lemonade/",
+            "Vanilla Milkshake": "https://www.allrecipes.com/recipe/48974/vanilla-milkshake-i/"
+        }
+    };
+
+    const recipeContainer = document.getElementById('recipeContainer');
+    const generateBtn = document.getElementById('generateBtn');
+    const categorySelect = document.getElementById('category');
+    const recipeModal = document.getElementById('recipeModal');
+    const recipeTitle = document.getElementById('recipeTitle');
+    const recipeDetails = document.getElementById('recipeDetails');
+    const modalClose = document.querySelector('.close');
+
+    generateBtn.addEventListener('click', () => {
+        const selectedCategory = categorySelect.value;
+        const randomRecipe = getRandomRecipe(selectedCategory);
+        if (randomRecipe) {
+            displayRecipe(randomRecipe);
+            generateBtn.textContent = 'Regenerate Recipe';
+        } else {
+            recipeContainer.innerHTML = `<p>No recipes found for the selected category.</p>`;
+        }
+    });
+
+    function getRandomRecipe(category) {
+        const recipesInCategory = recipes[category];
+        const recipeNames = Object.keys(recipesInCategory);
+        if (recipeNames.length > 0) {
+            const randomIndex = Math.floor(Math.random() * recipeNames.length);
+            return recipeNames[randomIndex];
+        }
+        return null;
+    }
+
+    function displayRecipe(recipe) {
+        recipeContainer.innerHTML = '';
+        const recipeCard = document.createElement('div');
+        recipeCard.classList.add('recipe-card');
+        recipeCard.innerHTML = `
+            <h3>${recipe}</h3>
+            <button class="view-recipe">View Recipe</button>
+        `;
+        recipeContainer.appendChild(recipeCard);
+    }
+
+    recipeContainer.addEventListener('click', (event) => {
+        if (event.target.classList.contains('view-recipe')) {
+            const recipeName = event.target.previousElementSibling.textContent;
+            openRecipeModal(recipeName);
+        }
+    });
+
+    function openRecipeModal(recipe) {
+    const recipeURL = recipes[categorySelect.value][recipe];
+    if (recipeURL) {
+        window.open(recipeURL, '_blank');
+    } else {
+        alert("Recipe URL not found.");
+    }
+}
+
+    categorySelect.addEventListener('change', () => {
+        generateBtn.textContent = 'Generate Recipe';
+    });
+});
+ 
+</script>
+</body>
+</html>
